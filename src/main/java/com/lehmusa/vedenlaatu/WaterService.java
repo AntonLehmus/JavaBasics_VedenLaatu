@@ -125,7 +125,8 @@ public class WaterService {
     private void printLatestMeasurementes(LatestMeasurements current){
         DecimalFormat df = new DecimalFormat("##.#");
         
-        double Rusko,Kaupinoja,Messukyla,Pinsio,Julkujarvi,Mustalampi,Hyhky=0.0;
+        double Rusko,Kaupinoja,Messukyla,Pinsio,Julkujarvi,Mustalampi,Hyhky,
+                cl,hardness,ph,pintavesi,retention,temperature,pohjavesi=0.0;
         
         Rusko=current.getRusko();
         Kaupinoja=current.getKaupinoja();
@@ -135,6 +136,15 @@ public class WaterService {
         Mustalampi=current.getMustalampi();
         Hyhky=current.getHyhky();
         
+        cl=current.getCl();
+        hardness=current.getHardness();
+        ph=current.getPh();
+        retention=current.getRetention();
+        pintavesi=current.getPintavesi();
+        pohjavesi=current.getPohjavesi();
+        temperature=current.getT();
+        
+        
         out.println("Veden aluperä käsittelylaitoksittain:");
         out.println("Rusko: "+df.format(Rusko)+"%");
         out.println("Kaupinoja: "+df.format(Kaupinoja)+"%");
@@ -143,6 +153,16 @@ public class WaterService {
         out.println("Mustalampi: "+df.format(Mustalampi)+"%");
         out.println("Hyhky: "+df.format(Hyhky)+"%");
         out.println("Pinsio: "+df.format(Pinsio)+"%");
+        out.println("");
+        out.println("Veden laatu:");
+        out.println("Pohjavesi: "+df.format(pohjavesi)+"%");
+        out.println("Pintavesi: "+df.format(pintavesi)+"%");
+        out.println("Viipymä: "+df.format(retention)+"h");
+        out.println("Lämpötila: "+df.format(temperature)+"°C");
+        out.println("pH: "+df.format(ph));
+        out.println("Kloori: "+df.format(cl)+"mg / l");
+        out.println("Kovuus: "+df.format(cl)+"°dH");
+        out.println("");
         out.println("");
     }
     
