@@ -173,7 +173,7 @@ public class WaterService {
         out.println("Lämpötila: "+df.format(temperature)+"°C");
         out.println("pH: "+df.format(ph));
         out.println("Kloori: "+df.format(cl)+"mg / l");
-        out.println("Kovuus: "+df.format(cl)+"°dH");
+        out.println("Kovuus: "+df.format(hardness)+"°dH");
         out.println("");
         out.println("--------------------------------------------------------");
     }
