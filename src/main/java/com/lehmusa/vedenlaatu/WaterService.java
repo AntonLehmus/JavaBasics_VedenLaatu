@@ -65,7 +65,8 @@ public class WaterService {
         switch (input){
             case 1:
                 getWaterData();
-                 out.println("Data päivitetty!");
+                out.println("Data päivitetty!");
+                mainMenu();
                 break;
             case 2:
                 String area="";
@@ -92,11 +93,12 @@ public class WaterService {
     }
     
     private void showResults(String area){
-            ArrayList<Integer> temp = findArea(area);
-                if(temp.size()>0){
-                    for (Integer num : temp) {
-                            out.println(waterArray[num].getSlug().toString());
-                            printLatestMeasurementes(waterArray[num].getLatestMeasurements());
+        if(waterArray.length>0){
+            ArrayList<Integer> foundIndexes = findArea(area);
+                if(foundIndexes.size()>0){
+                    for (Integer index : foundIndexes) {
+                            out.println(waterArray[index].getSlug().toString());
+                            printLatestMeasurementes(waterArray[index].getLatestMeasurements());
                             }
                     }
                 else{
@@ -104,6 +106,12 @@ public class WaterService {
                     out.println("");
                     mainMenu();
                 }
+        }
+        else{
+            out.println("Hae data ensin!");
+            out.println("");
+            mainMenu();
+        }
     }
     
     private void showOptions(){
