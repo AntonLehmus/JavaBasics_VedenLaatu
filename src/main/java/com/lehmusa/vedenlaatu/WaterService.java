@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
  */
 public class WaterService {
     private static Vedenlaatu[] waterArray;
+    private boolean dataReadable = false;
     
     
     public static void main(String[] args) {
@@ -39,6 +40,7 @@ public class WaterService {
 
                         waterArray = new GsonBuilder().create().
                                 fromJson(jsonResponse, Vedenlaatu[].class);
+                        dataReadable = true;
                     }
                 });
         httpThread.start();
@@ -50,8 +52,11 @@ public class WaterService {
         showOptions();
         
         strInput = JOptionPane.showInputDialog("Toiminto: ");
-        if(strInput != null){
-         input = Integer.parseInt( strInput);
+        //input validation
+        if(strInput != null && (strInput.equals("1") || 
+                strInput.equals("2") || strInput.equals("3") || 
+                strInput.equals("4") )){
+            input = Integer.parseInt( strInput);
         }
         else{
             out.println("");
@@ -66,6 +71,7 @@ public class WaterService {
             case 1:
                 getWaterData();
                 out.println("Data päivitetty!");
+                out.println("");
                 mainMenu();
                 break;
             case 2:
@@ -73,9 +79,11 @@ public class WaterService {
                 while(area==null){
                    area = JOptionPane.showInputDialog("Alue (pienilläkirjaimilla): "); 
                 }
+                out.println("");
                 showResults(area);
                 break;
             case 3:
+                out.println("");
                 listLocations();
                 break;
             case 4:
@@ -96,7 +104,7 @@ public class WaterService {
     }
     
     private void showResults(String area){
-        if(waterArray.length>0){
+        if(dataReadable){
             ArrayList<Integer> foundIndexes = findArea(area);
                 if(foundIndexes.size()>0){
                     for (Integer index : foundIndexes) {
@@ -115,6 +123,7 @@ public class WaterService {
             out.println("");
             mainMenu();
         }
+        mainMenu();
     }
     
     private void showOptions(){
