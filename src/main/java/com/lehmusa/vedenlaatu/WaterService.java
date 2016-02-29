@@ -5,7 +5,11 @@
  */
 package com.lehmusa.vedenlaatu;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import static java.lang.System.out;
+import java.util.List;
+
 
 /**
  *
@@ -21,12 +25,20 @@ public class WaterService {
         HttpThread httpThread = new HttpThread( 
                 "https://vellamo.tampere.fi/api/v1/latest.json", 
                 new HttpThreadListener() {
-            @Override
-            public void JsonResponseReady(String jsonResponse) {
-                out.println(jsonResponse);
-                   
-            }
-    });
+                    @Override
+                    public void JsonResponseReady(String jsonResponse) {
+                        //out.println(jsonResponse);
+
+                        Vedenlaatu[] waterArray = new GsonBuilder().create().
+                                fromJson(jsonResponse, Vedenlaatu[].class);
+                        
+                        out.println(waterArray[0].getName().toString());
+
+                    }
+                });
         httpThread.start();
     }
+}
+interface HttpThreadListener {
+    public void JsonResponseReady ( String jsonResponse );
 }
