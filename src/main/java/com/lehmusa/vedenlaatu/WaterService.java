@@ -9,6 +9,8 @@ package com.lehmusa.vedenlaatu;
 import com.google.gson.GsonBuilder;
 import static java.lang.System.out;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+
 
 
 
@@ -17,6 +19,9 @@ import java.text.DecimalFormat;
  * @author Anton
  */
 public class WaterService {
+    private static Vedenlaatu[] waterArray;
+    
+    
     public static void main(String[] args) {
         WaterService waterService = new WaterService();
      
@@ -30,12 +35,17 @@ public class WaterService {
                     public void JsonResponseReady(String jsonResponse) {
                         //out.println(jsonResponse);
 
-                        Vedenlaatu[] waterArray = new GsonBuilder().create().
+                        waterArray = new GsonBuilder().create().
                                 fromJson(jsonResponse, Vedenlaatu[].class);
                         
-                        out.println(waterArray[0].getName().toString());
-                       printLatestMeasurementes(waterArray[0].getLatestMeasurements());
-
+                        ArrayList<Integer> temp = findArea("hervanta");
+                        if(temp.size()>0){
+                            for (Integer num : temp) {
+                                out.println(waterArray[num].getSlug().toString());
+                                 printLatestMeasurementes(waterArray[num].getLatestMeasurements());
+                            }
+                        }	      
+                     
                     }
                 });
         httpThread.start();
@@ -61,6 +71,33 @@ public class WaterService {
         out.println("Mustalampi: "+df.format(Mustalampi)+"%");
         out.println("Hyhky: "+df.format(Hyhky)+"%");
         out.println("Pinsio: "+df.format(Pinsio)+"%");
+        out.println("");
+    }
+    
+    private  ArrayList<Integer> findArea(String needle){
+        ArrayList<Integer> found = new ArrayList<Integer>();
+        int subStrEndIndex;
+        int indexOfNotfound = -1;
+        String slug;
+        //etsitään kaikki maininnat halutusta alueesta
+        for(int i=0; i<waterArray.length;i++){
+            slug =  waterArray[i].getSlug();
+            subStrEndIndex=slug.indexOf('-');
+            
+            if(subStrEndIndex==indexOfNotfound){
+                if(needle.equals(slug)){
+                    found.add(i);
+                }
+            }
+            else{
+                if(needle.equals(slug.substring(0,subStrEndIndex))){
+                    found.add(i);
+                }
+            }
+        }
+        //palautetaan lista waterArray:n indekseistä joissa on halutun paikan 
+        //tieotja
+        return found;
     }
 }
 interface HttpThreadListener {
