@@ -69,7 +69,10 @@ public class WaterService {
                 mainMenu();
                 break;
             case 2:
-                String area="";
+                String area=null;
+                while(area==null){
+                   area = JOptionPane.showInputDialog("Alue (pienilläkirjaimilla): "); 
+                }
                 showResults(area);
                 break;
             case 3:
@@ -97,7 +100,7 @@ public class WaterService {
             ArrayList<Integer> foundIndexes = findArea(area);
                 if(foundIndexes.size()>0){
                     for (Integer index : foundIndexes) {
-                            out.println(waterArray[index].getSlug().toString());
+                            out.println("Alue: "+waterArray[index].getSlug().toString());
                             printLatestMeasurementes(waterArray[index].getLatestMeasurements());
                             }
                     }
@@ -163,7 +166,7 @@ public class WaterService {
         out.println("Kloori: "+df.format(cl)+"mg / l");
         out.println("Kovuus: "+df.format(cl)+"°dH");
         out.println("");
-        out.println("");
+        out.println("--------------------------------------------------------");
     }
     
     private  ArrayList<Integer> findArea(String needle){
