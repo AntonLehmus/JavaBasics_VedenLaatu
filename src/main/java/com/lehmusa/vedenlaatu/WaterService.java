@@ -5,10 +5,11 @@
  */
 package com.lehmusa.vedenlaatu;
 
-import com.google.gson.Gson;
+
 import com.google.gson.GsonBuilder;
 import static java.lang.System.out;
-import java.util.List;
+import java.text.DecimalFormat;
+
 
 
 /**
@@ -33,10 +34,33 @@ public class WaterService {
                                 fromJson(jsonResponse, Vedenlaatu[].class);
                         
                         out.println(waterArray[0].getName().toString());
+                       printLatestMeasurementes(waterArray[0].getLatestMeasurements());
 
                     }
                 });
         httpThread.start();
+    }
+    private void printLatestMeasurementes(LatestMeasurements current){
+        DecimalFormat df = new DecimalFormat("##.#");
+        
+        double Rusko,Kaupinoja,Messukyla,Pinsio,Julkujarvi,Mustalampi,Hyhky=0.0;
+        
+        Rusko=current.getRusko();
+        Kaupinoja=current.getKaupinoja();
+        Messukyla=current.getMessukyla();
+        Pinsio=current.getPinsio();
+        Julkujarvi=current.getJulkujarvi();
+        Mustalampi=current.getMustalampi();
+        Hyhky=current.getHyhky();
+        
+        out.println("Veden aluperä käsittelylaitoksittain:");
+        out.println("Rusko: "+df.format(Rusko)+"%");
+        out.println("Kaupinoja: "+df.format(Kaupinoja)+"%");
+        out.println("Messukyla: "+df.format(Messukyla)+"%");
+        out.println("Julkujarvi: "+df.format(Julkujarvi)+"%");
+        out.println("Mustalampi: "+df.format(Mustalampi)+"%");
+        out.println("Hyhky: "+df.format(Hyhky)+"%");
+        out.println("Pinsio: "+df.format(Pinsio)+"%");
     }
 }
 interface HttpThreadListener {
