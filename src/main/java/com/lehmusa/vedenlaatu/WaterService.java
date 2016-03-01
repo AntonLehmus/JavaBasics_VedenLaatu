@@ -21,11 +21,13 @@ import javax.swing.JOptionPane;
  */
 public class WaterService {
     private static Vedenlaatu[] waterArray;
+    private static Area[] areaArray;
     private boolean dataReadable = false;
     
     
     public static void main(String[] args) {
         WaterService main = new WaterService(); 
+        main.getAreaData(); /**/
         main.mainMenu();
      
     }
@@ -36,8 +38,8 @@ public class WaterService {
                 new HttpThreadListener() {
                     @Override
                     public void JsonResponseReady(String jsonResponse) {
-                        //out.println(jsonResponse);
-
+                        
+                        //rakentaa array:n json datasta
                         waterArray = new GsonBuilder().create().
                                 fromJson(jsonResponse, Vedenlaatu[].class);
                         dataReadable = true;
@@ -45,6 +47,27 @@ public class WaterService {
                 });
         httpThread.start();
     }
+    
+     public void getAreaData() {
+        // Luo HTTPThread -säie ja käynnistä se
+        HttpThread httpThread = new HttpThread( 
+                "https://vellamo.tampere.fi/api/v1/areas.json", 
+                new HttpThreadListener() {
+                    @Override
+                    public void JsonResponseReady(String jsonResponse) {
+                        
+                        //rakentaa array:n json datasta
+                        areaArray = new GsonBuilder().create().
+                                fromJson(jsonResponse, Area[].class);
+                        dataReadable = true;
+                    }
+                });
+        httpThread.start();
+    }
+    
+    
+    
+    
     private void mainMenu(){
         String strInput;
         int input = 0;
@@ -53,9 +76,8 @@ public class WaterService {
         
         strInput = JOptionPane.showInputDialog("Toiminto: ");
         //input validation
-        if(strInput != null && (strInput.equals("1") || 
-                strInput.equals("2") || strInput.equals("3") || 
-                strInput.equals("4") )){
+        if(strInput.equals("1") || strInput.equals("2") 
+                || strInput.equals("3") || strInput.equals("4") ){
             input = Integer.parseInt( strInput);
         }
         else{
@@ -77,7 +99,7 @@ public class WaterService {
             case 2:
                 String area=null;
                 while(area==null){
-                   area = JOptionPane.showInputDialog("Alue (pienilläkirjaimilla): "); 
+                   area = JOptionPane.showInputDialog("Alue (pienillä kirjaimilla): "); 
                 }
                 out.println("");
                 showResults(area);
@@ -104,11 +126,12 @@ public class WaterService {
     }
     
     private void showResults(String area){
-        if(dataReadable){
+        if(dataReadable){ //onko data ylipäänsä olemassa
+            //haetaan halutun alueen indeksint ArrayListiin
             ArrayList<Integer> foundIndexes = findArea(area);
-                if(foundIndexes.size()>0){
-                    for (Integer index : foundIndexes) {
-                            out.println("Alue: "+waterArray[index].getSlug().toString());
+                if(foundIndexes.size()>0){ //löytyikö alue
+                    for (Integer index : foundIndexes) {//käydään läpi kaikki löytyneet indeksit
+                            out.println("Alue: "+waterArray[index].getSlug());
                             printLatestMeasurementes(waterArray[index].getLatestMeasurements());
                             }
                     }
@@ -135,11 +158,14 @@ public class WaterService {
     }
     
     private void printLatestMeasurementes(LatestMeasurements current){
+        //numeroiden muotoilu
         DecimalFormat df = new DecimalFormat("##.#");
         
+        //apumuuttujat selkeyttämään koodia
         double Rusko,Kaupinoja,Messukyla,Pinsio,Julkujarvi,Mustalampi,Hyhky,
                 cl,hardness,ph,pintavesi,retention,temperature,pohjavesi=0.0;
         
+        //haetaan data apumuuttujiin
         Rusko=current.getRusko();
         Kaupinoja=current.getKaupinoja();
         Messukyla=current.getMessukyla();
@@ -156,7 +182,7 @@ public class WaterService {
         pohjavesi=current.getPohjavesi();
         temperature=current.getT();
         
-        
+        //datan tulostus
         out.println("Veden aluperä käsittelylaitoksittain:");
         out.println("Rusko: "+df.format(Rusko)+"%");
         out.println("Kaupinoja: "+df.format(Kaupinoja)+"%");
@@ -186,21 +212,27 @@ public class WaterService {
         //etsitään kaikki maininnat halutusta alueesta
         for(int i=0; i<waterArray.length;i++){
             slug =  waterArray[i].getSlug();
+            
+            /*etsii ensimmäisen '-' merkin slug:ista.
+            Tämä on tarpeellsita koska alueet jakautuu useaan ala-alueeseen.
+            esm hervanta-I, hervanta-II jne.*/
             subStrEndIndex=slug.indexOf('-');
             
+            //jos slug:issa ei ole '-' merkkiä
             if(subStrEndIndex==indexOfNotfound){
-                if(needle.equals(slug)){
+                if(needle.equals(slug)){//jos slug on sama kuin etsittävä alue
                     found.add(i);
                 }
             }
             else{
+                //jos slug (lukuun ottamatta "-I" osiota) on sama kuin etsittävä alue
                 if(needle.equals(slug.substring(0,subStrEndIndex))){
                     found.add(i);
                 }
             }
         }
-        //palautetaan lista waterArray:n indekseistä joissa on halutun paikan 
-        //tieotja
+        /*palautetaan lista waterArray:n indekseistä joissa on halutun paikan 
+        tieotja*/
         return found;
     }
 }
