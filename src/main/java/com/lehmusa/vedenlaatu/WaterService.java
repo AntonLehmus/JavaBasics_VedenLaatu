@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.lehmusa.vedenlaatu;
 
 
@@ -27,7 +22,7 @@ public class WaterService {
     
     public static void main(String[] args) {
         WaterService main = new WaterService(); 
-        main.getAreaData(); /**/
+        main.getAreaData(); /*haetaan alueet etukäteen*/
         main.mainMenu();
      
     }
@@ -122,7 +117,23 @@ public class WaterService {
     }
     
     private void listLocations(){
-        out.println("TODO");
+        ArrayList<String> alreadyDisplayed = new  ArrayList<String>();
+        boolean uniqueArea = true;
+         for (Area current : areaArray){
+            for(String test : alreadyDisplayed){
+                //näytetään kukin alue vain kerran useista ala-alueista huolimatta
+                if(test.equals(current.getName())){
+                    uniqueArea=false;
+                    break;
+                }
+            }
+            //näytetään nimi vain jos se on uniikki
+            if(uniqueArea){
+                out.println(current.getName());
+            }
+            alreadyDisplayed.add(current.getName());
+            uniqueArea=true;
+         }
     }
     
     private void showResults(String area){
