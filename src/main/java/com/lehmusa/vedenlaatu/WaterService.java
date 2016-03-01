@@ -71,8 +71,8 @@ public class WaterService {
         
         strInput = JOptionPane.showInputDialog("Toiminto: ");
         //input validation
-        if(strInput.equals("1") || strInput.equals("2") 
-                || strInput.equals("3") || strInput.equals("4") ){
+        if(strInput != null &&(strInput.equals("1") || strInput.equals("2") 
+                || strInput.equals("3") || strInput.equals("4")) ){
             input = Integer.parseInt( strInput);
         }
         else{
@@ -134,6 +134,8 @@ public class WaterService {
             alreadyDisplayed.add(current.getName());
             uniqueArea=true;
          }
+         out.println("");
+         mainMenu();
     }
     
     private void showResults(String area){
